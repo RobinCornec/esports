@@ -1,0 +1,52 @@
+{# match/message.stream.html.twig #}
+
+{# New messages received through the Mercure connection are appended to the div with the "messages" ID. #}
+<turbo-stream action="replace" target="messages">
+    <template>
+        <tr>
+            <td
+                class="
+                           text-center text-dark
+                           font-medium
+                           text-base
+                           py-5
+                           px-2
+                           bg-[#F3F6FF]
+                           border-b border-l border-[#E8E8E8]
+                           "
+            >
+                {{ match.name }}
+            </td>
+            <td
+                class="
+                           text-center text-dark
+                           font-medium
+                           text-base
+                           py-5
+                           px-2
+                           bg-white
+                           border-b border-[#E8E8E8]
+                           "
+            >
+                {{ match.team1Name }} : {{ match.team1Score }} - {{ match.team2Score }} : {{ match.team2Name }}
+            </td>
+            <td
+                class="
+                           text-center text-dark
+                           font-medium
+                           text-base
+                           py-5
+                           px-2
+                           bg-white
+                           border-b border-r border-[#E8E8E8]
+                           "
+            >
+                {% if match.ended %}
+                    OUI
+                {% else %}
+                    NON
+                {% endif %}
+            </td>
+        </tr>
+    </template>
+</turbo-stream>
