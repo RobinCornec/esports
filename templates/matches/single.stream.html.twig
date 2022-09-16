@@ -1,0 +1,11 @@
+{# match/message.stream.html.twig #}
+
+{# New messages received through the Mercure connection are appended to the div with the "messages" ID. #}
+
+{% for match in matches %}
+    <turbo-stream action="replace" target="match-{{ match.pandaScoreId }}">
+        <template>
+            {% include 'matches/match-row.html.twig' with {'match': match} %}
+        </template>
+    </turbo-stream>
+{% endfor %}

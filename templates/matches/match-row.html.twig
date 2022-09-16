@@ -1,0 +1,11 @@
+<tr class="mdc-data-table__row" style="{% if match.ended %}
+                            background-color: #f5f2f0
+                        {% endif %}" id="match-{{ match.pandaScoreId }}">
+    <th class="mdc-data-table__cell" scope="row">{{ match.name }} (BO {{ match.numberOfGames }})</th>
+    <td class="mdc-data-table__cell" style="text-align: center">
+        <img src="{{ match.team1Logo }}" alt="{{ match.team1Name }}"/>
+        <div class="score">{{ match.team1Score }} - {{ match.team2Score }}</div>
+        <img src="{{ match.team2Logo }}" alt="{{ match.team2Name }}"/>
+    </td>
+    <th class="mdc-data-table__cell" scope="row">{{ match.beginAt | date("d/m/Y H:i", "Europe/Paris") }}</th>
+</tr>

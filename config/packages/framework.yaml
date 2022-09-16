@@ -17,6 +17,12 @@ framework:
     php_errors:
         log: true
 
+    http_client:
+        scoped_clients:
+            pandascore.client:
+                base_uri: 'https://api.pandascore.co'
+                auth_bearer: '%env(PANDASCORE_ACCESS_TOKEN)%'
+
 when@test:
     framework:
         test: true

@@ -1,0 +1,30 @@
+{
+    "devDependencies": {
+        "@hotwired/stimulus": "^3.0.0",
+        "@hotwired/turbo": "^7.0.1",
+        "@symfony/stimulus-bridge": "^3.2.0",
+        "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/Resources/assets",
+        "@symfony/ux-turbo-mercure": "file:vendor/symfony/ux-turbo-mercure/Resources/assets",
+        "@symfony/webpack-encore": "^3.1.0",
+        "autoprefixer": "^10.4.8",
+        "core-js": "^3.23.0",
+        "postcss": "^8.4.16",
+        "postcss-loader": "^7.0.1",
+        "regenerator-runtime": "^0.13.9",
+        "sass": "^1.54.9",
+        "sass-loader": "^13.0.2",
+        "webpack-notifier": "^1.15.0"
+    },
+    "license": "UNLICENSED",
+    "private": true,
+    "scripts": {
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "watch": "encore dev --watch",
+        "build": "encore production --progress"
+    },
+    "dependencies": {
+        "@material/checkbox": "^14.0.0",
+        "material-components-web": "^14.0.0"
+    }
+}
