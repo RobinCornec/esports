@@ -2,12 +2,12 @@
 
 namespace App\Command;
 
-use App\Entity\Matches;
+use App\Entity\Contest;
 use App\Entity\Series;
-use App\Entity\Tournaments;
-use App\Repository\MatchesRepository;
-use App\Repository\SeriesRepository;
-use App\Repository\TournamentsRepository;
+use App\Entity\Tournament;
+use App\Repository\ContestRepository;
+use App\Repository\SerieRepository;
+use App\Repository\TournamentRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use JsonException;
@@ -40,13 +40,12 @@ class PandaScoreCommand extends Command
     private const MATCHES_URI = '/matches';
 
     public function __construct(
-        private readonly HttpClientInterface $pandascoreClient,
         private readonly Environment $twig,
         private readonly HubInterface $hub,
         private readonly ManagerRegistry $doctrine,
-        private readonly MatchesRepository $matchesRepository,
-        private readonly SeriesRepository $seriesRepository,
-        private readonly TournamentsRepository $tournamentsRepository
+        private readonly ContestRepository $matchesRepository,
+        private readonly SerieRepository $seriesRepository,
+        private readonly TournamentRepository $tournamentsRepository
     )
     {
         parent::__construct();
@@ -87,14 +86,14 @@ class PandaScoreCommand extends Command
             self::SERIES_URI . $argumentSerieId,
         );
 
-        $responseMatches = $this->pandascoreClient->request(
+        $responseContests = $this->pandascoreClient->request(
             'GET',
             self::SERIES_URI . $argumentSerieId . self::MATCHES_URI,
         );
 
 
         $apiSerie = json_decode($responseSerie->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        $apiMatches = json_decode($responseMatches->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $apiContests = json_decode($responseContests->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $findedSerie = $this->seriesRepository->findOneBy(['pandaScoreId' => $argumentSerieId]);
         $entitySerie = (new Series())->create($apiSerie, $argumentSerieId, $findedSerie);
@@ -102,48 +101,48 @@ class PandaScoreCommand extends Command
 
         $listEntitiesTournaments = [];
         $updateAll = false;
-        $listNotEndedMatches = [];
-        $listMatches = [];
+        $listNotEndedContests = [];
+        $listContests = [];
 
         if ($input->getOption('publish-hub')) {
-            $listNotEndedMatches = $this->matchesRepository->findBy(['ended' => false]);
+            $listNotEndedContests = $this->matchesRepository->findBy(['ended' => false]);
         }
 
         foreach ($apiSerie['tournaments'] as $apiTournament) {
             $findedTournament = $this->tournamentsRepository->findOneBy(['pandaScoreId' => $apiTournament['id']]);
-            $entityTournament = (new Tournaments())->create($apiTournament, $apiTournament['id'], $entitySerie, $findedTournament);
+            $entityTournament = (new Tournament())->create($apiTournament, $apiTournament['id'], $entitySerie, $findedTournament);
             $this->tournamentsRepository->add($entityTournament);
             $listEntitiesTournaments[$entityTournament->getPandaScoreId()] = $entityTournament;
             $entityTournament= null;
         }
 
-        foreach ($apiMatches as $apiMatch) {
-            $findedMatch = $this->matchesRepository->findOneBy(['pandaScoreId' => $apiMatch['id']]);
+        foreach ($apiContests as $apiContest) {
+            $findedContest = $this->matchesRepository->findOneBy(['pandaScoreId' => $apiContest['id']]);
 
-            if (null === $findedMatch) {
+            if (null === $findedContest) {
                 $updateAll = true;
             }
 
-            $findedTournament = $listEntitiesTournaments[$apiMatch['tournament_id']];
-            $entityMatch = (new Matches())->create($apiMatch, $apiMatch['id'], $findedTournament, $findedMatch);
+            $findedTournament = $listEntitiesTournaments[$apiContest['tournament_id']];
+            $entityContest = (new Contest())->create($apiContest, $apiContest['id'], $findedTournament, $findedContest);
 
-            $this->matchesRepository->add($entityMatch);
-            $listMatches[$entityMatch->getPandaScoreId()] = $entityMatch;
+            $this->matchesRepository->add($entityContest);
+            $listContests[$entityContest->getPandaScoreId()] = $entityContest;
 
-            $entityMatch = null;
+            $entityContest = null;
         }
 
         $this->doctrine->getManager()->flush();
 
         if ($input->getOption('publish-hub')) {
             $file = 'single.stream.html.twig';
-            foreach ($listNotEndedMatches as $notEndedMatch) {
-                $listMatches[] = $listMatches[$notEndedMatch->getPandaScoreId()];
+            foreach ($listNotEndedContests as $notEndedContest) {
+                $listContests[] = $listContests[$notEndedContest->getPandaScoreId()];
             }
 
             if ($updateAll) {
                 $file = 'all.stream.html.twig';
-                $listMatches = $this->matchesRepository->findBy([], [
+                $listContests = $this->matchesRepository->findBy([], [
                     'ended' => 'asc',
                     'beginAt' => 'desc',
                 ]);
@@ -151,7 +150,7 @@ class PandaScoreCommand extends Command
 
             $update = new Update(
                 'games-lol',
-                $this->twig->render('matches/' . $file, ['matches' => $listMatches])
+                $this->twig->render('matches/' . $file, ['matches' => $listContests])
             );
 
             $this->hub->publish($update);

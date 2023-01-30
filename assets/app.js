@@ -6,18 +6,9 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import './styles/app.scss';
+import './styles/app.css';
 
 // start the Stimulus application
 import './bootstrap';
 
-const listEl = document.querySelector('.mdc-drawer .mdc-list');
-const mainContentEl = document.querySelector('.main-content');
-
-listEl.addEventListener('click', (event) => {
-    mainContentEl.querySelector('input, button').focus();
-});
-
-document.body.addEventListener('MDCDrawer:closed', () => {
-    mainContentEl.querySelector('input, button').focus();
-});
+// require('bootstrap');

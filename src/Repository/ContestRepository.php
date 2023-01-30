@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Matches;
+use App\Entity\Contest;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Matches>
+ * @extends ServiceEntityRepository<Contest>
  *
- * @method Matches|null find($id, $lockMode = null, $lockVersion = null)
- * @method Matches|null findOneBy(array $criteria, array $orderBy = null)
- * @method Matches[]    findAll()
- * @method Matches[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Contest|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Contest|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Contest[]    findAll()
+ * @method Contest[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class MatchesRepository extends ServiceEntityRepository
+class ContestRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Matches::class);
+        parent::__construct($registry, Contest::class);
     }
 
-    public function add(Matches $entity, bool $flush = false): void
+    public function add(Contest $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class MatchesRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Matches $entity, bool $flush = false): void
+    public function remove(Contest $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class MatchesRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Matches[] Returns an array of Matches objects
+//     * @return Contest[] Returns an array of Contest objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class MatchesRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Matches
+//    public function findOneBySomeField($value): ?Contest
 //    {
 //        return $this->createQueryBuilder('m')
 //            ->andWhere('m.exampleField = :val')

@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Repository\SeriesRepository;
+use App\Repository\SerieRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\ExceptionInterface;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class UpdateResultsCommand extends Command
 {
     public function __construct(
-        private readonly SeriesRepository $seriesRepository
+        private readonly SerieRepository $serieRepository
     )
     {
         parent::__construct();
@@ -41,7 +41,7 @@ class UpdateResultsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $onGoingSeries = $this->seriesRepository->findBy(['ended' => false]);
+        $onGoingSeries = $this->serieRepository->findBy(['ended' => false]);
         $application = $this->getApplication();
 
         if (null === $application) {
@@ -54,7 +54,7 @@ class UpdateResultsCommand extends Command
 
         foreach ($onGoingSeries as $serie) {
             $arguments = [
-                'id'    => $serie->getPandaScoreId(),
+                'id'    => $serie->getId(),
                 '--publish-hub'  => true,
             ];
 
